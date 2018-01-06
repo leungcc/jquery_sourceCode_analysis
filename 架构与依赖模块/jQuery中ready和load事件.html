@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<title>dom加载</title>
+</head>
+
+<body>
+
+
+    <script>
+    var show = function(data) {
+        return console.log(data)
+    };
+    </script>
+    <script src="http://img.mukewang.com/down/540812440001e40e00000000.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+    show('观察脚本加载的顺序')
+    document.addEventListener("DOMContentLoaded", function() {
+        show('DOMContentLoaded回调')
+    }, false);
+
+    window.addEventListener("load", function() {
+        show('load事件回调')
+    }, false);
+
+    show('脚本解析一')
+
+    //测试加载
+    $(function(){
+        show('脚本解析二')
+    })
+
+    show('脚本解析三');
+
+    /**
+     * 为什么解析二比DOMContentLoaded要先执行？
+     * 因为jquery比addEventListener('DOMContentLoaded')要先加载
+     */
+    </script>
+</body>
+</html>
