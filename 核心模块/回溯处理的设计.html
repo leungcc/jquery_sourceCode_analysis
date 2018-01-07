@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>了解jQuery对DOM进行遍历背后的工作机制</title>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+</head>
+<body>
+    <button id="test1">直接处理</button>
+    <button id="test2">通过end连贯处理</button> 
+        
+    <ul class="first">
+        <li class="foo">list item 1</li>
+        <li>list item 2</li>
+        <li class="bar">list item 3</li>
+    </ul>
+    <ul class="second">
+        <li class="foo">list item 1</li>
+        <li>list item 2</li>
+        <li class="bar">list item 3</li>
+    </ul>
+<script>
+/**
+ * 本小节将了解 jQuery 对 DOM 进行遍历背后的工作机制，这样可以在编写代码时有意识地避免一些不必要的重复操作。
+ * 
+ * 通过对 sizzle 的分析，我们可以得知 jQuery选择器最终都是通过 DOM 接口实现取值的，
+ * 但是通过 jQuery 处理后返回的不仅仅只有 DOM对象，而是一个包装容器，返回 jQuery对象
+ * 
+ * jQuery对象中有个 prevObject对象，这个是干啥的？？ 这要从对象栈说起。
+ * 
+ * 每个 jQuery对象都有三个属性：context、selector和prevObject。
+ * 其中 prevObject属性就指向这个对象栈中的前一个对象。
+ * 
+ * jQuery为我们操作这个内部对象栈提供了非常有用的2个方法 .end() .addBack()
+ */
+ $("#test1").click(function(){
+   //直接处理
+   var foo = $('ul.first').find('.foo');
+   foo.css('background-color', 'red')
+   foo.find('.bar').css('background-color', 'green'); 
+})
+
+
+$("#test2").click(function(){
+  //通过end连贯处理
+  $('ul.first').find('.foo').css('background-color', 'red')
+  .end().find('.bar').css('background-color', 'green');
+})
+
+console.log(Object.prototype.toString.call($(".foo")));
+console.log($("#test2"));
+console.log(jQuery.merge(jQuery(), [document.getElementsByClassName('foo')[0]]));
+</script>
+</body>
+</html>
